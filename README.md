@@ -2,7 +2,7 @@
 
 <img src="./SpotiPy.jpg" width="300">
 
-SpotiPy is a graph simulation of Spotify in which we have songs, which are linked together 
+SpotiPy is a graph simulation of Spotify where we have songs, which are linked together 
 when a user has them added to the same playlist. 
 
 To start the app:
@@ -43,7 +43,8 @@ Returns the amount of songs that are a specified amount from said song.
     clustering (optional){song}
 
 By default returns the average clustering coefficient for all songs. If it receives a song, it returns the clustering 
-coefficient for that song. (e.g. : clustering Bad Romance - Lady Gaga)
+coefficient for that song. Clustering for all songs will take some time. 
+(e.g. : clustering Bad Romance - Lady Gaga) 
 
 
  
