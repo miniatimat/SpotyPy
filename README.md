@@ -1,6 +1,6 @@
 <H1>Python Project: SpotyPy</H1>
 
-<img src="./SpotiPy.jpg" width="300">
+<img src="./SpotyPy/SpotiPy.jpg" width="300">
 
 SpotiPy is a graph simulation of Spotify where we have songs, which are linked together 
 when a user has them added to the same playlist. 
