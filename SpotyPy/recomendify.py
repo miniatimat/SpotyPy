@@ -12,11 +12,11 @@ ARTIST = 'ARTIST'
 PLAYLIST_NAME = 'PLAYLIST_NAME'
 
 # Comandos
-CMD_CAMINO_MAS_CORTO = 'camino'
-CMD_MAS_IMPORTANTES = 'mas_importantes'
-CMD_RECOMENDACION = 'recomendacion'
-CMD_CICLO = 'ciclo'
-CMD_RANGO = 'rango'
+CMD_CAMINO_MAS_CORTO = 'path'
+CMD_MAS_IMPORTANTES = 'most_added'
+CMD_RECOMENDACION = 'recommended'
+CMD_CICLO = 'cicle'
+CMD_RANGO = 'range'
 CMD_CLUSTERING = 'clustering'
 
 
@@ -72,7 +72,7 @@ def crear_grafo_canciones(y, playlists):
 
 def camino_mas_corto(x, origen, destino):
 	'''A partir de un grafo, un conjunto de canciones y otro de usuarios, un origen y un destino, esta función crea
-	un camino mínimo entre amb'''
+	un camino mínimo entre ambos'''
 	padre = bfs_camino_minimo(x, origen)
 	camino = crear_camino(padre, origen, destino)
 	if not camino:
@@ -82,11 +82,11 @@ def camino_mas_corto(x, origen, destino):
 	while len(camino) > 0:
 		usuario = camino.pop(0)
 		siguiente = camino.pop(0)
-		resultado += f'{anterior} --> aparece en playlist --> '
+		resultado += f'{anterior} --> is in playlist --> '
 		playlist = x.peso(anterior, usuario)
-		resultado += f'{playlist} --> de --> {usuario} --> tiene una playlist --> '
+		resultado += f'{playlist} --> by --> {usuario} --> has a playlist --> '
 		playlist = x.peso(usuario, siguiente)
-		resultado += f'{playlist} --> donde aparece --> '
+		resultado += f'{playlist} --> where there is --> '
 		anterior = siguiente
 	resultado += anterior
 	return resultado
@@ -133,18 +133,18 @@ def procesar_comando(comando, parametros, x, y, usuarios, canciones, playlists, 
 	if comando == CMD_CAMINO_MAS_CORTO:
 		aux = parametros.split(' >>>> ')
 		if len(aux) != 2:
-			print(f'<{CMD_CAMINO_MAS_CORTO}> debe recibir dos parametros.')
+			print(f'<{CMD_CAMINO_MAS_CORTO}> must receive Origin and Destination.')
 			return
 		origen, destino = aux
 		if origen not in canciones or destino not in canciones:
-			print('Tanto el origen como el destino deben ser canciones')
+			print('Origin and Destination must be songs')
 			return
 		elif origen == destino:
-			print('Las canciones deben ser distintas.')
+			print('Origin and Destination songs must be different.')
 			return
 		resultado = camino_mas_corto(x, origen, destino)
 		if not resultado:
-			print('No se encontro recorrido')
+			print('Could not find a path')
 			return
 		print(resultado)
 
@@ -157,7 +157,7 @@ def procesar_comando(comando, parametros, x, y, usuarios, canciones, playlists, 
 					pagerank.append(x)
 		n = parametros
 		if not n.isdigit():
-			print('El parámetro debe ser un número.')
+			print('Parameter must be a number.')
 			return
 		n = int(n)
 		print('; '.join(pagerank[:n]))
@@ -165,24 +165,24 @@ def procesar_comando(comando, parametros, x, y, usuarios, canciones, playlists, 
 	elif comando == CMD_RECOMENDACION:
 		aux = parametros.split(" ", 2)
 		if len(aux) != 3:
-			print("Parametros incorrectos")
+			print("Invalid parameters")
 			return
 		cancion_o_usuario, cantidad, basado_en = aux[0], aux[1], aux[2]
 		sugerencias = basado_en.split(' >>>> ')
 		pide_canciones = True
-		
+
 		for cancion in sugerencias:
 			if cancion not in canciones:
-				print(f'<{cancion}> no es una canción')
+				print(f'<{cancion}> is not a song')
 				return
 		if not cantidad.isdigit():
-			print('La cantidad debe ser un número')
+			print('Amount must be a number')
 			return
 		cantidad = int(cantidad)
-		if cancion_o_usuario == 'usuarios':
+		if cancion_o_usuario == 'users':
 			pide_canciones = False
-		elif cancion_o_usuario != 'canciones':
-			print('Solo se pueden devolver usuarios o canciones')
+		elif cancion_o_usuario != 'songs':
+			print('Can only return a song or user')
 			return
 		recomendaciones = recomendacion(x, pide_canciones, cantidad, sugerencias, usuarios, canciones)
 		print("; ".join(recomendaciones))
@@ -190,21 +190,21 @@ def procesar_comando(comando, parametros, x, y, usuarios, canciones, playlists, 
 	elif comando == CMD_CICLO: 
 		aux = parametros.split(' ', 1)
 		if len(aux) != 2:
-			print(f'<{CMD_CICLO}> debe recibir dos parametros.')
+			print(f'<{CMD_CICLO}> must receive 2 parameters.')
 			return
 		n, cancion = aux[0], aux[1]
 		if cancion not in canciones:
-			print(f'<{cancion}> no es una canción')
+			print(f'<{cancion}> is not a song')
 			return
 		if not n.isdigit():
-			print('El segundo parámetro debe ser un número positivo.')
+			print('Second parameter must be a positive integer')
 			return
 		n = int(n)
 		if y.cantidad_aristas() == 0:
 			crear_grafo_canciones(y, playlists)
 		ciclo = ciclo_canciones(y, playlists, n, cancion)
 		if len(ciclo) != (n + 1):
-			print('No se encontro recorrido')
+			print('Path not found')
 			return
 		else:
 			print(" --> ".join(ciclo))
@@ -212,16 +212,16 @@ def procesar_comando(comando, parametros, x, y, usuarios, canciones, playlists, 
 	elif comando == CMD_RANGO:
 		aux = parametros.split(' ', 1)
 		if len(aux) != 2:
-			print(f'<{CMD_RANGO}> debe recibir dos parametros.')
+			print(f'<{CMD_RANGO}> must receive two parameters.')
 			return
 		rango = aux[0]
 		cancion = aux[1]
 		if not rango.isdigit():
-			print('El primer parámetro debe ser un número positivo.')
+			print('First parameter must be a positive integer.')
 			return
 		rango = int(rango)
 		if cancion not in canciones:
-			print('El segundo parámetro debe ser una canción.')
+			print('Second parameter MUST be a song.')
 			return
 		if y.cantidad_aristas() == 0:
 			crear_grafo_canciones(y, playlists)
@@ -229,7 +229,6 @@ def procesar_comando(comando, parametros, x, y, usuarios, canciones, playlists, 
 
 	elif comando == CMD_CLUSTERING:
 		cancion = parametros
-		coeficiente = 0
 		if y.cantidad_aristas() == 0:
 			crear_grafo_canciones(y, playlists)
 		if cancion == '':
@@ -239,30 +238,30 @@ def procesar_comando(comando, parametros, x, y, usuarios, canciones, playlists, 
 			coeficiente = suma / y.cantidad_vertices()
 		else:
 			if cancion not in canciones:
-				print(f'<{cancion}> no es una canción')
+				print(f'<{cancion}> is not a song')
 				return
 			coeficiente = clustering(y, cancion)
 		print((str.format('{0:.3f}',coeficiente)))
 
 	else:
-		print(f'<{comando}> no es un comando válido.')
+		print(f'<{comando}> is not a valid command.')
 
 
 def main():
 	if len(sys.argv) != 2:
-		print('No se recibió la cantidad correcta de parámetros.')
+		print('Please input "spotify-mini.tsv." or a valid .tsv file path')
 		return
 	ruta = sys.argv[1]
 	try:
 		elementos = tsv_crear_estructura(ruta)
 	except FileNotFoundError:
-		print('El archivo no existe.')
+		print("Path is invalid or file doesn´t exist. Please verify your parameters.")
 		return
 	x, y, playlists, usuarios, canciones = crear_grafos(elementos)
 	pagerank = []
 	while True:
 		try:
-			print("Enter you command")
+			print("Awaiting command:")
 			linea = input()
 			aux = linea.rstrip('\n').split(' ', 1)
 			if len(aux) == 1:
